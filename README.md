@@ -31,3 +31,7 @@ dotnet restore
 ```
 ### 3. Run the app
 - open the solution in Visual studio and run the app
+
+### 4. See the api swagger
+http://localhost:5183/swagger/index.html
+
