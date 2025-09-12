@@ -1,17 +1,12 @@
 ﻿using CarAPI.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Collections;
-using System.Collections.Generic;
-using System.Diagnostics;
 
 namespace CarAPI.Data
 {
-    public class AppDbContext : DbContext
+    public class CarDbContext : DbContext
     {
-        internal IEnumerable Persons;
-
-        public AppDbContext(DbContextOptions<AppDbContext> options)
-            : base(options)
+        public CarDbContext(DbContextOptions<CarDbContext> options)
+    : base(options)
         {
         }
 

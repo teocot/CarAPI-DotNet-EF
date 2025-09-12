@@ -22,7 +22,7 @@ namespace CarAPI.Controllers
         // GET: Persons
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Person.ToListAsync());
+            return View(await _context.People.ToListAsync());
         }
 
         // GET: Persons/Details/5
@@ -33,8 +33,7 @@ namespace CarAPI.Controllers
                 return NotFound();
             }
 
-            var person = await _context.Person
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var person = await _context.People.FirstOrDefaultAsync(m => m.Id == id);
             if (person == null)
             {
                 return NotFound();
@@ -82,7 +81,7 @@ namespace CarAPI.Controllers
                 return NotFound();
             }
 
-            var person = await _context.Person.FindAsync(id);
+            var person = await _context.People.FindAsync(id);
             if (person == null)
             {
                 return NotFound();
@@ -133,7 +132,7 @@ namespace CarAPI.Controllers
                 return NotFound();
             }
 
-            var person = await _context.Person
+            var person = await _context.People
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (person == null)
             {
@@ -148,10 +147,10 @@ namespace CarAPI.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var person = await _context.Person.FindAsync(id);
+            var person = await _context.People.FindAsync(id);
             if (person != null)
             {
-                _context.Person.Remove(person);
+                _context.People.Remove(person);
             }
 
             await _context.SaveChangesAsync();
@@ -160,7 +159,7 @@ namespace CarAPI.Controllers
 
         private bool PersonExists(int id)
         {
-            return _context.Person.Any(e => e.Id == id);
+            return _context.People.Any(e => e.Id == id);
         }
     }
 }

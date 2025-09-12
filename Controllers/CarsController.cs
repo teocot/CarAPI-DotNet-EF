@@ -43,7 +43,7 @@ namespace CarAPI.Controllers
         // GET: Cars/Create
         public IActionResult Create()
         {
-            ViewBag.PersonList = new SelectList(_context.Person.ToList(), "Id", "Name");
+            ViewBag.PersonList = new SelectList(_context.People.ToList(), "Id", "Name");
             return View(new Car());
         }
 
@@ -73,7 +73,7 @@ namespace CarAPI.Controllers
         [Route("api/persons/{personId}/cars")]
         public async Task<IActionResult> GetCarsForPerson(int personId)
         {
-            var personExists = await _context.Person.AnyAsync(p => p.Id == personId);
+            var personExists = await _context.People.AnyAsync(p => p.Id == personId);
             if (!personExists)
             {
                 return NotFound(new { error = "Person not found." });
@@ -90,7 +90,7 @@ namespace CarAPI.Controllers
         [Route("api/persons")]
         public async Task<IActionResult> GetAllPersons()
         {
-            var persons = await _context.Person
+            var persons = await _context.People
                 .Include(p => p.Cars)
                 .Select(p => new PersonDto
                 {
@@ -113,7 +113,7 @@ namespace CarAPI.Controllers
         [HttpGet("api/persons/{id}")]
         public async Task<IActionResult> GetPerson(int id)
         {
-            var person = await _context.Person
+            var person = await _context.People
                 .Include(p => p.Cars)
                 .FirstOrDefaultAsync(p => p.Id == id);
 
@@ -146,7 +146,7 @@ namespace CarAPI.Controllers
                 return BadRequest(new { error = "Name and Email are required." });
             }
 
-            _context.Person.Add(person);
+            _context.People.Add(person);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction(nameof(GetPerson), new { id = person.Id }, person);
@@ -157,7 +157,7 @@ namespace CarAPI.Controllers
         public async Task<IActionResult> AddCarToPerson(int personId, [FromBody] Car car)
         {
             // Validate person existence
-            var person = await _context.Person.FindAsync(personId);
+            var person = await _context.People.FindAsync(personId);
             if (person == null)
             {
                 return NotFound(new { error = $"Person with ID {personId} not found." });
@@ -202,7 +202,7 @@ namespace CarAPI.Controllers
             if (car.PersonId == null || car.PersonId == 0)
             {
                 ModelState.AddModelError("PersonId", "Please select a valid person.");
-                ViewBag.PersonList = new SelectList(_context.Person.ToList(), "Id", "Name", car.PersonId);
+                ViewBag.PersonList = new SelectList(_context.People.ToList(), "Id", "Name", car.PersonId);
                 return View(car);
             }
 
@@ -221,7 +221,7 @@ namespace CarAPI.Controllers
             }
 
             // Optional: validate that the person exists
-            var personExists = await _context.Person.AnyAsync(p => p.Id == car.PersonId);
+            var personExists = await _context.People.AnyAsync(p => p.Id == car.PersonId);
             if (!personExists)
             {
                 return BadRequest(new { error = "PersonId does not match any existing person." });
@@ -242,7 +242,7 @@ namespace CarAPI.Controllers
             var car = await _context.Cars.FindAsync(id);
             if (car == null) return NotFound();
 
-            ViewBag.PersonList = new SelectList(_context.Person.ToList(), "Id", "Name", car.PersonId);
+            ViewBag.PersonList = new SelectList(_context.People.ToList(), "Id", "Name", car.PersonId);
             return View(car);
         }
 
@@ -268,7 +268,7 @@ namespace CarAPI.Controllers
                 }
             }
 
-            ViewBag.PersonList = new SelectList(_context.Person.ToList(), "Id", "Name", car.PersonId);
+            ViewBag.PersonList = new SelectList(_context.People.ToList(), "Id", "Name", car.PersonId);
             return View(car);
         }
 
