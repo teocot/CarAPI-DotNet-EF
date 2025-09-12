@@ -37,5 +37,5 @@ http://localhost:5183/swagger/index.html
 
 ### 4. swagger view
 
-![Alt text](images/swagger.jpg "API swagger")
+![Alt text](images/swagger.JPG "API swagger")
 
