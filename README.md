@@ -22,7 +22,7 @@
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/your-username/CarAPI.git
+git clone https://github.com/teocot/CarAPI.git
 cd CarAPI
 ```
 
