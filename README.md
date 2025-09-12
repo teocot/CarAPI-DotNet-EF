@@ -35,3 +35,5 @@ dotnet restore
 ### 4. See the api swagger
 http://localhost:5183/swagger/index.html
 
+### 4. swagger view
+![Alt text](images/swagger.jpg "API swagger")
