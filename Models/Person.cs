@@ -14,5 +14,8 @@ namespace CarAPI.Models
         public string Email { get; set; }
 
         public ICollection<Car>? Cars { get; set; }
+
+        // One person can have many purchases
+        public ICollection<Purchase> Purchases { get; set; } = new List<Purchase>();
     }
 }
