@@ -25,5 +25,9 @@
 git clone https://github.com/teocot/CarAPI.git
 cd CarAPI
 ```
+### 2. Restore the packages for the project
+```bash
+dotnet restore
+```
 ### 3. Run the app
 - open the solution in Visual studio and run the app
