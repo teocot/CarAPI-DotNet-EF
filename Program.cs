@@ -1,13 +1,14 @@
 using CarAPI.Data;
+using CarAPI.Models;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
+// Use In-Memory DB
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseInMemoryDatabase("DemoDb"));
 
-// Add services to the container.
+// Add services
 builder.Services.AddControllersWithViews();
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
@@ -17,22 +18,24 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Configure and seed in-memory DB
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    dbContext.Database.EnsureCreated();
+
+    dbContext.Person.Add(new Person { Name = "Alice", Email = "alice@example.com" });
+    dbContext.Cars.Add(new Car { Make = "Toyota", Color = "Red", Model = "Corolla", Year = 2020, PersonId = 1 });
+    dbContext.SaveChanges();
+}
+
+// Middleware pipeline
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
 }
 app.UseStaticFiles();
-
 app.UseRouting();
-
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapControllerRoute(
-        name: "default",
-        pattern: "{controller=Home}/{action=Index}/{id?}");
-});
-
 app.UseAuthorization();
 
 app.MapControllerRoute(
