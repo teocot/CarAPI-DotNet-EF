@@ -29,4 +29,4 @@ cd CarAPI
 ### 2. Restore dependencies
 dotnet restore
 ### 3. Run the app
-dotnet run
+- open the solution in Visual studio and run the app
