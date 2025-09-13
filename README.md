@@ -27,7 +27,7 @@ dotnet restore
 ## Demonstrate Entity framework
 
 ### Uses in memory database
-- no need to run sql server of docker for a container
+- no need to run sql server or docker for a sql container
 
 ### Design
 - zero to many relationsip person - puchases
