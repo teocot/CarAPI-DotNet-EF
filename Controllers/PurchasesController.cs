@@ -36,6 +36,7 @@ namespace CarAPI.Controllers
             return View(purchase);
         }
 
+
         public async Task<IActionResult> Create()
         {
             var people = await _purchaseService.GetPeopleAsync();
