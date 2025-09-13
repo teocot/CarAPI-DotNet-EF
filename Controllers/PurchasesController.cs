@@ -41,11 +41,13 @@ namespace CarAPI.Controllers
             var people = await _purchaseService.GetPeopleAsync();
             ViewData["PersonId"] = new SelectList(people, "Id", "Name");
 
-            var availableCars = _context.Cars.Where(c => c.Purchase == null).ToList();
-            ViewData["CarId"] = new SelectList(cars, "Id", "Make");
+            var availableCars = await _purchaseService.GetAvailableCarsAsync();
+            ViewData["CarId"] = new SelectList(availableCars, "Id", "Make");
 
             return View();
         }
+
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(PurchaseViewModel model)
