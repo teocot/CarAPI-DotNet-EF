@@ -1,128 +1,72 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using CarAPI.Data;
+using CarAPI.Models;
+using CarAPI.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using CarAPI.Data;
-using CarAPI.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace CarAPI.Controllers
 {
     public class PurchasesController : Controller
     {
-        private readonly AppDbContext _context;
+        private readonly IPurchaseService _purchaseService;
 
-        public PurchasesController(AppDbContext context)
+        public PurchasesController(IPurchaseService purchaseService)
         {
-            _context = context;
+            _purchaseService = purchaseService;
         }
 
-        // GET: Purchases
         public async Task<IActionResult> Index()
         {
-            var appDbContext = _context.Purchases.Include(p => p.Buyer).Include(p => p.Car);
-            return View(await appDbContext.ToListAsync());
+            var purchases = await _purchaseService.GetAllAsync();
+            return View(purchases);
         }
 
-        // GET: Purchases/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
-            var purchase = await _context.Purchases
-                .Include(p => p.Buyer)
-                .Include(p => p.Car)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (purchase == null)
-            {
-                return NotFound();
-            }
+            var purchase = await _purchaseService.GetByIdAsync(id.Value);
+            if (purchase == null) return NotFound();
 
             return View(purchase);
         }
 
-        // GET: Purchases/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            var people = _context.People.ToList();
-            if (people.Any())
-            {
-                ViewData["PersonId"] = new SelectList(people, "Id", "Name");
-            }
-            else
-            {
-                ViewData["PersonId"] = new SelectList(new List<SelectListItem>
-                {
-                    new SelectListItem { Text = "Must create person", Value = "" }
-                }, "Value", "Text");
-            }
+            var people = await _purchaseService.GetPeopleAsync();
+            ViewData["PersonId"] = new SelectList(people, "Id", "Name");
 
             var availableCars = _context.Cars.Where(c => c.Purchase == null).ToList();
-
-            if (availableCars.Any())
-            {
-                ViewData["CarId"] = new SelectList(availableCars, "Id", "Make");
-            }
-            else
-            {
-                // Add a dummy item to indicate no cars are available
-                ViewData["CarId"] = new SelectList(new List<SelectListItem>
-                {
-                    new SelectListItem { Text = "Must create car", Value = "" }
-                }, "Value", "Text");
-            }
+            ViewData["CarId"] = new SelectList(cars, "Id", "Make");
 
             return View();
         }
-
-        // POST: Purchases/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(PurchaseViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var purchase = new Purchase
-                {
-                    PurchaseDate = model.PurchaseDate,
-                    PersonId = model.PersonId,
-                    CarId = model.CarId
-                };
-
-                _context.Purchases.Add(purchase);
-                await _context.SaveChangesAsync();
+                await _purchaseService.CreateAsync(model);
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewData["PersonId"] = new SelectList(_context.People, "Id", "Name", model.PersonId);
-            ViewData["CarId"] = new SelectList(_context.Cars, "Id", "Make", model.CarId);
+            ViewData["PersonId"] = new SelectList(await _purchaseService.GetPeopleAsync(), "Id", "Name", model.PersonId);
+            ViewData["CarId"] = new SelectList(await _purchaseService.GetAvailableCarsAsync(), "Id", "Make", model.CarId);
             return View(model);
         }
 
-        // GET: Purchases/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
-            var purchase = await _context.Purchases
-                .Include(p => p.Buyer)
-                .Include(p => p.Car)
-                .FirstOrDefaultAsync(p => p.Id == id);
-
-            if (purchase == null)
-            {
-                return NotFound();
-            }
+            var purchase = await _purchaseService.GetByIdAsync(id.Value);
+            if (purchase == null) return NotFound();
 
             var viewModel = new PurchaseViewModel
             {
@@ -132,98 +76,69 @@ namespace CarAPI.Controllers
                 CarId = purchase.CarId
             };
 
-            ViewData["PersonId"] = new SelectList(_context.People, "Id", "Name", viewModel.PersonId);
-            ViewData["CarId"] = new SelectList(_context.Cars, "Id", "Make", viewModel.CarId);
+            var people = await _purchaseService.GetPeopleAsync();
+            ViewData["PersonId"] = new SelectList(people, "Id", "Name", viewModel.PersonId);
+
+            var availableCars = await _purchaseService.GetAvailableCarsAsync();
+
+            // Ensure current car is included even if it's already purchased
+            if (!availableCars.Any(c => c.Id == viewModel.CarId))
+            {
+                var currentCar = await _purchaseService.GetCarByIdAsync(viewModel.CarId);
+                if (currentCar != null)
+                {
+                    availableCars.Add(currentCar);
+                }
+            }
+
+            ViewData["CarId"] = new SelectList(
+                availableCars.Select(c => new { c.Id, Name = $"{c.Make} {c.Model}" }),
+                "Id", "Name", viewModel.CarId);
 
             return View(viewModel);
         }
 
-        // POST: Purchases/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, PurchaseViewModel model)
         {
-            if (id != model.purchaseId)
-            {
-                return NotFound();
-            }
+            if (id != model.purchaseId) return NotFound();
 
             if (ModelState.IsValid)
             {
-                var purchase = await _context.Purchases.FindAsync(id);
-                if (purchase == null)
-                {
-                    return NotFound();
-                }
+                var success = await _purchaseService.UpdateAsync(id, model);
+                if (!success) return NotFound();
 
-                purchase.PurchaseDate = model.PurchaseDate;
-                purchase.PersonId = model.PersonId;
-                purchase.CarId = model.CarId;
-
-                try
-                {
-                    _context.Update(purchase);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!PurchaseExists(purchase.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewData["PersonId"] = new SelectList(_context.People, "Id", "Name", model.PersonId);
-            ViewData["CarId"] = new SelectList(_context.Cars, "Id", "Make", model.CarId);
+            ViewData["PersonId"] = new SelectList(await _purchaseService.GetPeopleAsync(), "Id", "Name", model.PersonId);
+            ViewData["CarId"] = new SelectList(await _purchaseService.GetAvailableCarsAsync(), "Id", "Make", model.CarId);
             return View(model);
         }
 
-        // GET: Purchases/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
-            var purchase = await _context.Purchases
-                .Include(p => p.Buyer)
-                .Include(p => p.Car)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (purchase == null)
-            {
-                return NotFound();
-            }
+            var purchase = await _purchaseService.GetByIdAsync(id.Value);
+            if (purchase == null) return NotFound();
 
             return View(purchase);
         }
 
-        // POST: Purchases/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var purchase = await _context.Purchases.FindAsync(id);
-            if (purchase != null)
-            {
-                _context.Purchases.Remove(purchase);
-            }
-
-            await _context.SaveChangesAsync();
+            await _purchaseService.DeleteAsync(id);
             return RedirectToAction(nameof(Index));
         }
 
-        private bool PurchaseExists(int id)
+        private async Task<bool> PurchaseExists(int id)
         {
-            return _context.Purchases.Any(e => e.Id == id);
+            return await _purchaseService.ExistsAsync(id);
         }
+
     }
 }

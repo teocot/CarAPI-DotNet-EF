@@ -25,6 +25,7 @@ builder.Services.AddSwaggerGen();           // Registers Swagger generator
 // add the service layer
 builder.Services.AddScoped<ICarService, CarService>();
 builder.Services.AddScoped<IPersonService, PersonService>();
+builder.Services.AddScoped<IPurchaseService, PurchaseService>();
 
 var app = builder.Build();
 
