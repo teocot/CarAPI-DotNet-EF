@@ -10,6 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseInMemoryDatabase("DemoDb"));
 builder.Services.AddSession();
+builder.Services.AddHttpContextAccessor(); // Required for Razor views
 
 // Add services
 builder.Services.AddControllersWithViews();
