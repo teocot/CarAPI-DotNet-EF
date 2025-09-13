@@ -39,10 +39,30 @@ namespace CarAPI.Controllers
         public async Task<IActionResult> Create()
         {
             var people = await _purchaseService.GetPeopleAsync();
-            ViewData["PersonId"] = new SelectList(people, "Id", "Name");
+            if (people.Any())
+            {
+                ViewBag.PersonId = new SelectList(people, "Id", "Name");
+            }
+            else
+            {
+                ViewBag.PersonId = new SelectList(new List<SelectListItem>
+                {
+                    new SelectListItem { Text = "Create new person", Value = "", Disabled = true, Selected = true }
+                }, "Value", "Text");
+            }
 
-            var availableCars = await _purchaseService.GetAvailableCarsAsync();
-            ViewData["CarId"] = new SelectList(availableCars, "Id", "Make");
+            var cars = await _purchaseService.GetAvailableCarsAsync();
+            if (cars.Any())
+            {
+                ViewBag.CarId = new SelectList(cars, "Id", "Make");
+            }
+            else
+            {
+                ViewBag.CarId = new SelectList(new List<SelectListItem>
+                {
+                    new SelectListItem { Text = "Create new car", Value = "", Disabled = true, Selected = true }
+                }, "Value", "Text");
+            }
 
             return View();
         }
@@ -58,8 +78,8 @@ namespace CarAPI.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewData["PersonId"] = new SelectList(await _purchaseService.GetPeopleAsync(), "Id", "Name", model.PersonId);
-            ViewData["CarId"] = new SelectList(await _purchaseService.GetAvailableCarsAsync(), "Id", "Make", model.CarId);
+            ViewBag.PersonId = new SelectList(await _purchaseService.GetPeopleAsync(), "Id", "Name", model.PersonId);
+            ViewBag.CarId = new SelectList(await _purchaseService.GetAvailableCarsAsync(), "Id", "Make", model.CarId);
             return View(model);
         }
 
@@ -86,7 +106,7 @@ namespace CarAPI.Controllers
             // Ensure current car is included even if it's already purchased
             if (!availableCars.Any(c => c.Id == viewModel.CarId))
             {
-                var currentCar = await _purchaseService.GetCarByIdAsync(viewModel.CarId);
+                var currentCar = await _purchaseService.GetCarByIdAsync(viewModel.CarId.Value);
                 if (currentCar != null)
                 {
                     availableCars.Add(currentCar);

@@ -2,6 +2,7 @@
 using CarAPI.Models;
 using CarAPI.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Web.Mvc;
 
 namespace CarAPI.Services
 {
@@ -26,11 +27,16 @@ namespace CarAPI.Services
 
         public async Task<bool> CreateAsync(PurchaseViewModel model)
         {
+            if (model.PersonId == null || model.CarId == null)
+            {
+                return false; // Let the controller decide how to handle this
+            }
+
             var purchase = new Purchase
             {
                 PurchaseDate = model.PurchaseDate,
-                PersonId = model.PersonId,
-                CarId = model.CarId
+                PersonId = model.PersonId.Value,
+                CarId = model.CarId.Value
             };
 
             _context.Purchases.Add(purchase);
@@ -41,11 +47,12 @@ namespace CarAPI.Services
         public async Task<bool> UpdateAsync(int id, PurchaseViewModel model)
         {
             var purchase = await _context.Purchases.FindAsync(id);
-            if (purchase == null) return false;
+            if (purchase == null || model.PersonId == null || model.CarId == null)
+                return false;
 
             purchase.PurchaseDate = model.PurchaseDate;
-            purchase.PersonId = model.PersonId;
-            purchase.CarId = model.CarId;
+            purchase.PersonId = model.PersonId.Value;
+            purchase.CarId = model.CarId.Value;
 
             _context.Update(purchase);
             await _context.SaveChangesAsync();

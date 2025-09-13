@@ -26,14 +26,14 @@ namespace CarAPI.Data
                 .HasOne(p => p.Buyer)
                 .WithMany(b => b.Purchases)
                 .HasForeignKey(p => p.PersonId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
 
             // One-to-one: Purchase → Car
             modelBuilder.Entity<Purchase>()
                 .HasOne(p => p.Car)
                 .WithOne(c => c.Purchase)
                 .HasForeignKey<Purchase>(p => p.CarId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }
