@@ -86,30 +86,6 @@ namespace CarAPI.Controllers
             return Ok(cars);
         }
 
-        [HttpGet]
-        [Route("api/persons")]
-        public async Task<IActionResult> GetAllPersons()
-        {
-            var persons = await _context.People
-                .Include(p => p.Cars)
-                .Select(p => new PersonDto
-                {
-                    Id = p.Id,
-                    Name = p.Name,
-                    Email = p.Email,
-                    Cars = p.Cars.Select(c => new CarDto
-                    {
-                        Id = c.Id,
-                        Model = c.Model,
-                        Make = c.Make,
-                        Year = c.Year
-                    }).ToList()
-                })
-                .ToListAsync();
-
-            return Ok(persons);
-        }
-
         [HttpGet("api/persons/{id}")]
         public async Task<IActionResult> GetPerson(int id)
         {
@@ -134,22 +110,6 @@ namespace CarAPI.Controllers
             };
 
             return Ok(dto);
-        }
-
-        [HttpPost]
-        [Route("api/persons")]
-        [Consumes("application/json")]
-        public async Task<IActionResult> CreatePerson([FromBody] Person person)
-        {
-            if (person == null || string.IsNullOrWhiteSpace(person.Name) || string.IsNullOrWhiteSpace(person.Email))
-            {
-                return BadRequest(new { error = "Name and Email are required." });
-            }
-
-            _context.People.Add(person);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction(nameof(GetPerson), new { id = person.Id }, person);
         }
 
         [HttpPost("api/persons/{personId}/cars")]
@@ -203,29 +163,6 @@ namespace CarAPI.Controllers
             _context.SaveChanges();
             return RedirectToAction(nameof(Index));
         }
-        [HttpPost]
-        [Route("api/cars")]
-        [Consumes("application/json")]
-        public async Task<IActionResult> CreateFromJson([FromBody] Car car)
-        {
-            if (car == null || car.PersonId == null || car.PersonId == 0)
-            {
-                return BadRequest(new { error = "Invalid car data or missing PersonId." });
-            }
-
-            // Optional: validate that the person exists
-            var personExists = await _context.People.AnyAsync(p => p.Id == car.PersonId);
-            if (!personExists)
-            {
-                return BadRequest(new { error = "PersonId does not match any existing person." });
-            }
-
-            _context.Cars.Add(car);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction(nameof(Details), new { id = car.Id }, car);
-        }
-
 
         // GET: Cars/Edit/5
         public async Task<IActionResult> Edit(int? id)

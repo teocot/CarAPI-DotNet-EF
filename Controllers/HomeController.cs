@@ -9,7 +9,7 @@ namespace CarAPI.Controllers
     using Microsoft.AspNetCore.Mvc;
 
     namespace CarAPI.Controllers
-    {
+    { 
         public class HomeController : Controller
         {
             public IActionResult Index()

@@ -51,6 +51,14 @@ if (!app.Environment.IsDevelopment())
 }
 app.UseStaticFiles();
 app.UseRouting();
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllerRoute(
+        name: "default",
+        pattern: "{controller=Home}/{action=Index}/{id?}");
+
+    endpoints.MapControllers(); // Enables attribute routing for API controllers
+});
 app.UseAuthorization();
 
 app.MapControllerRoute(
