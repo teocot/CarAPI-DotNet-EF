@@ -47,45 +47,6 @@ namespace CarAPI.Controllers
             return View(new Car());
         }
 
-        [HttpGet]
-        [Route("api/cars")]
-        public async Task<IActionResult> GetAllCars()
-        {
-            var cars = await _context.Cars
-                .Include(c => c.Person)
-                .Select(static c => new CarDto
-                {
-                    Id = c.Id,
-                    Model = c.Model,
-                    Make = c.Make,
-                    Year = c.Year,
-                    Color = c.Color,
-                    Price = (double)c.Price,
-                    PersonId = c.PersonId ?? 0,
-                    PersonName = c.Person != null ? c.Person.Name : null
-                })
-                .ToListAsync();
-
-            return Ok(cars);
-        }
-
-        [HttpGet]
-        [Route("api/persons/{personId}/cars")]
-        public async Task<IActionResult> GetCarsForPerson(int personId)
-        {
-            var personExists = await _context.People.AnyAsync(p => p.Id == personId);
-            if (!personExists)
-            {
-                return NotFound(new { error = "Person not found." });
-            }
-
-            var cars = await _context.Cars
-                .Where(c => c.PersonId == personId)
-                .ToListAsync();
-
-            return Ok(cars);
-        }
-
         [HttpGet("api/persons/{id}")]
         public async Task<IActionResult> GetPerson(int id)
         {
@@ -202,40 +163,6 @@ namespace CarAPI.Controllers
             return View(car);
         }
 
-        [HttpPut("api/cars/{id}")]
-        [Consumes("application/json")]
-        public async Task<IActionResult> UpdateCar(int id, [FromBody] Car updatedCar)
-        {
-            if (id != updatedCar.Id)
-            {
-                return BadRequest(new { error = "Car ID in URL does not match ID in body." });
-            }
-
-            var existingCar = await _context.Cars.FindAsync(id);
-            if (existingCar == null)
-            {
-                return NotFound(new { error = $"Car with ID {id} not found." });
-            }
-
-            // Update fields
-            existingCar.Model = updatedCar.Model;
-            existingCar.Make = updatedCar.Make;
-            existingCar.Year = updatedCar.Year;
-            existingCar.Color = updatedCar.Color;
-            existingCar.Price = updatedCar.Price;
-            existingCar.PersonId = updatedCar.PersonId;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-                return NoContent(); // or Ok(existingCar) if you want to return the updated object
-            }
-            catch (DbUpdateException ex)
-            {
-                return StatusCode(500, new { error = "Failed to update car.", details = ex.Message });
-            }
-        }
-
         // GET: Cars/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -248,18 +175,6 @@ namespace CarAPI.Controllers
             if (car == null) return NotFound();
 
             return View(car);
-        }
-
-        [HttpDelete("api/cars/{id}")]
-        public async Task<IActionResult> DeleteCarApi(int id)
-        {
-            var car = await _context.Cars.FindAsync(id);
-            if (car == null)
-                return NotFound();
-
-            _context.Cars.Remove(car);
-            await _context.SaveChangesAsync();
-            return NoContent();
         }
 
         // POST: Cars/Delete/5

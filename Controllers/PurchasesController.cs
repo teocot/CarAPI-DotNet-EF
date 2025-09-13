@@ -186,37 +186,6 @@ namespace CarAPI.Controllers
             return View(model);
         }
 
-        [HttpPut("api/purchases/{id}")]
-        [Consumes("application/json")]
-        public async Task<IActionResult> UpdatePurchase(int id, [FromBody] PurchaseViewModel model)
-        {
-            if (id != model.purchaseId)
-            {
-                return BadRequest(new { error = "ID in URL does not match ID in body." });
-            }
-
-            var purchase = await _context.Purchases.FindAsync(id);
-            if (purchase == null)
-            {
-                return NotFound(new { error = $"Purchase with ID {id} not found." });
-            }
-
-            purchase.PurchaseDate = model.PurchaseDate;
-            purchase.PersonId = model.PersonId;
-            purchase.CarId = model.CarId;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-                return NoContent(); // or Ok(purchase) if you want to return the updated object
-            }
-            catch (DbUpdateException ex)
-            {
-                return StatusCode(500, new { error = "Failed to update purchase.", details = ex.Message });
-            }
-        }
-
-
         // GET: Purchases/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -250,21 +219,6 @@ namespace CarAPI.Controllers
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-        }
-
-        [HttpDelete("api/purchases/{id}")]
-        public async Task<IActionResult> DeletePurchase(int id)
-        {
-            var purchase = await _context.Purchases.FindAsync(id);
-            if (purchase == null)
-            {
-                return NotFound(new { error = $"Purchase with ID {id} not found." });
-            }
-
-            _context.Purchases.Remove(purchase);
-            await _context.SaveChangesAsync();
-
-            return NoContent(); // or Ok(new { message = "Purchase deleted." })
         }
 
         private bool PurchaseExists(int id)
