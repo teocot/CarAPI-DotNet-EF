@@ -60,47 +60,6 @@ namespace CarAPI.Controllers
             return Ok(cars);
         }
 
-        [HttpGet]
-        [Route("api/persons")]
-        public async Task<IActionResult> GetAllPersons()
-        {
-            var persons = await _context.People
-                .Include(p => p.Cars)
-                .Select(p => new PersonDto
-                {
-                    Id = p.Id,
-                    Name = p.Name,
-                    Email = p.Email,
-                    Cars = p.Cars.Select(c => new CarDto
-                    {
-                        Id = c.Id,
-                        Model = c.Model,
-                        Make = c.Make,
-                        Year = c.Year
-                    }).ToList()
-                })
-                .ToListAsync();
-
-            return Ok(persons);
-        }
-
-
-        [HttpPost]
-        [Route("api/persons")]
-        [Consumes("application/json")]
-        public async Task<IActionResult> CreatePerson([FromBody] Person person)
-        {
-            if (person == null || string.IsNullOrWhiteSpace(person.Name) || string.IsNullOrWhiteSpace(person.Email))
-            {
-                return BadRequest(new { error = "Name and Email are required." });
-            }
-
-            _context.People.Add(person);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction(nameof(GetPerson), new { id = person.Id }, person);
-        }
-
         [HttpPost]
         [Route("api/cars")]
         [Consumes("application/json")]
@@ -129,32 +88,6 @@ namespace CarAPI.Controllers
             return _context.Cars.Any(e => e.Id == id);
         }
 
-        [HttpGet("persons/{id}")]
-        public async Task<IActionResult> GetPerson(int id)
-        {
-            var person = await _context.People
-                .Include(p => p.Cars)
-                .FirstOrDefaultAsync(p => p.Id == id);
-
-            if (person == null)
-                return NotFound();
-
-            var dto = new PersonDto
-            {
-                Id = person.Id,
-                Name = person.Name,
-                Email = person.Email,
-                Cars = person.Cars.Select(c => new CarDto
-                {
-                    Id = c.Id,
-                    Model = c.Model,
-                    Make = c.Make,
-                    Year = c.Year
-                }).ToList()
-            };
-
-            return Ok(dto);
-        }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCarById(int id)
         {
