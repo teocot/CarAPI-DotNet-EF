@@ -51,10 +51,21 @@ namespace CarAPI.Services
             return true;
         }
 
-        public async Task<bool> DeleteCarAsync(int id)
+        public async Task<bool> DeleteCarAsync(int carId)
         {
-            var car = await _context.Cars.FindAsync(id);
-            if (car == null) return false;
+            // Check if the car is referenced in any purchases
+            bool hasPurchases = await _context.Purchases.AnyAsync(c => c.CarId == carId);
+            if (hasPurchases)
+            {
+                // Prevent deletion
+                return false;
+            }
+
+            var car = await _context.Cars.FindAsync(carId);
+            if (car == null)
+            {
+                return false;
+            }
 
             _context.Cars.Remove(car);
             await _context.SaveChangesAsync();
