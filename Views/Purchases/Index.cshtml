@@ -1,7 +1,7 @@
-﻿@model IEnumerable<CarAPI.Models.Person>
+﻿@model IEnumerable<CarAPI.Models.Purchase>
 
 @{
-    ViewData["Title"] = "People";
+    ViewData["Title"] = "Purchases require cars";
 }
 
 <h1>Index</h1>
@@ -13,10 +13,13 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                @Html.DisplayNameFor(model => model.PurchaseDate)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Email)
+                @Html.DisplayNameFor(model => model.Buyer)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Car)
             </th>
             <th></th>
         </tr>
@@ -25,10 +28,13 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Name)
+                @Html.DisplayFor(modelItem => item.PurchaseDate)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Email)
+                @Html.DisplayFor(modelItem => item.Buyer.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Car.Make)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

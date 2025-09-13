@@ -25,12 +25,16 @@ var app = builder.Build();
 // Configure and seed in-memory DB
 using (var scope = app.Services.CreateScope())
 {
-    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    dbContext.Database.EnsureCreated();
+    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-    dbContext.Person.Add(new Person { Name = "Alice", Email = "alice@example.com" });
-    dbContext.Cars.Add(new Car { Make = "Toyota", Color = "Red", Model = "Corolla", Year = 2020, PersonId = 1 });
-    dbContext.SaveChanges();
+    var person = new Person { Name = "Alice", Email = "alice@example.com" };
+    var car = new Car { Model = "Civic", Make = "Honda", Year = 2020, Price = 22000, Color = "Blue", Person = person };
+    var purchase = new Purchase { Buyer = person, Car = car, PurchaseDate = DateTime.UtcNow };
+
+    context.People.Add(person);
+    context.Cars.Add(car);
+    context.Purchases.Add(purchase);
+    context.SaveChanges();
 }
 
 // Enable Swagger only in development
