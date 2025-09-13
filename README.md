@@ -1,6 +1,7 @@
 # CarAPI
 
 - This is a simple ASP.NET Core web application using Entity Framework Core with an **in-memory database**. No external setup required—just clone and run!
+- It supports CRUD operations
 
 ## Getting Started
 
@@ -29,15 +30,15 @@ dotnet restore
 - no need to run sql server of docker for a container
 
 ### Design
-- one to many relationsip person 0 has * puchases
-- one to one relationship purchase one car
-- Normally 1-1 is a same entity relation.
-- A person can have 0..* cars
+- zero to many relationsip person - puchases
+- one to one relationship purchase - car
+- Normally 1-1 is a same entity relation, this is the eception
 - CRUD is also implemented
+- we implemented REST APIs along with MVC 
+- we use separate controllers for MVC and for REST
 
 ### 1. See the api swagger
 http://localhost:5183/swagger/index.html
-work in progress, to use PUT and DELETE
 
 ### 2. Swagger view
 
