@@ -199,13 +199,6 @@ namespace CarAPI.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(Car car)
         {
-            if (car.PersonId == null || car.PersonId == 0)
-            {
-                ModelState.AddModelError("PersonId", "Please select a valid person.");
-                ViewBag.PersonList = new SelectList(_context.People.ToList(), "Id", "Name", car.PersonId);
-                return View(car);
-            }
-
             _context.Cars.Add(car);
             _context.SaveChanges();
             return RedirectToAction(nameof(Index));
@@ -272,6 +265,40 @@ namespace CarAPI.Controllers
             return View(car);
         }
 
+        [HttpPut("api/cars/{id}")]
+        [Consumes("application/json")]
+        public async Task<IActionResult> UpdateCar(int id, [FromBody] Car updatedCar)
+        {
+            if (id != updatedCar.Id)
+            {
+                return BadRequest(new { error = "Car ID in URL does not match ID in body." });
+            }
+
+            var existingCar = await _context.Cars.FindAsync(id);
+            if (existingCar == null)
+            {
+                return NotFound(new { error = $"Car with ID {id} not found." });
+            }
+
+            // Update fields
+            existingCar.Model = updatedCar.Model;
+            existingCar.Make = updatedCar.Make;
+            existingCar.Year = updatedCar.Year;
+            existingCar.Color = updatedCar.Color;
+            existingCar.Price = updatedCar.Price;
+            existingCar.PersonId = updatedCar.PersonId;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+                return NoContent(); // or Ok(existingCar) if you want to return the updated object
+            }
+            catch (DbUpdateException ex)
+            {
+                return StatusCode(500, new { error = "Failed to update car.", details = ex.Message });
+            }
+        }
+
         // GET: Cars/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -284,6 +311,18 @@ namespace CarAPI.Controllers
             if (car == null) return NotFound();
 
             return View(car);
+        }
+
+        [HttpDelete("api/cars/{id}")]
+        public async Task<IActionResult> DeleteCarApi(int id)
+        {
+            var car = await _context.Cars.FindAsync(id);
+            if (car == null)
+                return NotFound();
+
+            _context.Cars.Remove(car);
+            await _context.SaveChangesAsync();
+            return NoContent();
         }
 
         // POST: Cars/Delete/5

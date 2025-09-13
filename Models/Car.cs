@@ -20,7 +20,6 @@ namespace CarAPI.Models
         [Range(0, double.MaxValue)]
         public decimal Price { get; set; }
 
-        [Required(ErrorMessage = "Please select a person.")]
         public int? PersonId { get; set; }
         public Person? Person { get; set; }
 
