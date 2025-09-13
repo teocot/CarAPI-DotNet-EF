@@ -50,7 +50,9 @@ namespace CarAPI.Controllers
         public IActionResult Create()
         {
             ViewData["PersonId"] = new SelectList(_context.People, "Id", "Name");
-            ViewData["CarId"] = new SelectList(_context.Cars, "Id", "Make");
+            ViewData["CarId"] = new SelectList(
+    _context.Cars.Where(c => c.Purchase == null), "Id", "Make");
+
             return View();
         }
 
@@ -59,17 +61,25 @@ namespace CarAPI.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,PurchaseDate,PersonId,CarId")] Purchase purchase)
+        public async Task<IActionResult> Create(PurchaseViewModel model)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(purchase);
+                var purchase = new Purchase
+                {
+                    PurchaseDate = model.PurchaseDate,
+                    PersonId = model.PersonId,
+                    CarId = model.CarId
+                };
+
+                _context.Purchases.Add(purchase);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["PersonId"] = new SelectList(_context.People, "Id", "Name", purchase.PersonId);
-            ViewData["CarId"] = new SelectList(_context.Cars, "Id", "Make", purchase.CarId);
-            return View(purchase);
+
+            ViewData["PersonId"] = new SelectList(_context.People, "Id", "Name", model.PersonId);
+            ViewData["CarId"] = new SelectList(_context.Cars, "Id", "Make", model.CarId);
+            return View(model);
         }
 
         // GET: Purchases/Edit/5
@@ -80,14 +90,28 @@ namespace CarAPI.Controllers
                 return NotFound();
             }
 
-            var purchase = await _context.Purchases.FindAsync(id);
+            var purchase = await _context.Purchases
+                .Include(p => p.Buyer)
+                .Include(p => p.Car)
+                .FirstOrDefaultAsync(p => p.Id == id);
+
             if (purchase == null)
             {
                 return NotFound();
             }
-            ViewData["PersonId"] = new SelectList(_context.People, "Id", "Name", purchase.PersonId);
-            ViewData["CarId"] = new SelectList(_context.Cars, "Id", "Make", purchase.CarId);
-            return View(purchase);
+
+            var viewModel = new PurchaseViewModel
+            {
+                purchaseId = purchase.Id,
+                PurchaseDate = purchase.PurchaseDate,
+                PersonId = purchase.PersonId,
+                CarId = purchase.CarId
+            };
+
+            ViewData["PersonId"] = new SelectList(_context.People, "Id", "Name", viewModel.PersonId);
+            ViewData["CarId"] = new SelectList(_context.Cars, "Id", "Make", viewModel.CarId);
+
+            return View(viewModel);
         }
 
         // POST: Purchases/Edit/5
@@ -95,15 +119,25 @@ namespace CarAPI.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,PurchaseDate,PersonId,CarId")] Purchase purchase)
+        public async Task<IActionResult> Edit(int id, PurchaseViewModel model)
         {
-            if (id != purchase.Id)
+            if (id != model.purchaseId)
             {
                 return NotFound();
             }
 
             if (ModelState.IsValid)
             {
+                var purchase = await _context.Purchases.FindAsync(id);
+                if (purchase == null)
+                {
+                    return NotFound();
+                }
+
+                purchase.PurchaseDate = model.PurchaseDate;
+                purchase.PersonId = model.PersonId;
+                purchase.CarId = model.CarId;
+
                 try
                 {
                     _context.Update(purchase);
@@ -122,9 +156,10 @@ namespace CarAPI.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["PersonId"] = new SelectList(_context.People, "Id", "Name", purchase.PersonId);
-            ViewData["CarId"] = new SelectList(_context.Cars, "Id", "Make", purchase.CarId);
-            return View(purchase);
+
+            ViewData["PersonId"] = new SelectList(_context.People, "Id", "Name", model.PersonId);
+            ViewData["CarId"] = new SelectList(_context.Cars, "Id", "Make", model.CarId);
+            return View(model);
         }
 
         // GET: Purchases/Delete/5
