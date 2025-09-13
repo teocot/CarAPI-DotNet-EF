@@ -6,7 +6,17 @@
 <p>This is your starting point. Choose where to go:</p>
 
 <ul>
-    <li><a asp-controller="Cars" asp-action="Index">View Cars</a></li>
-    <li><a asp-controller="Persons" asp-action="Index">View People</a></li>
-    <li><a asp-controller="Purchases" asp-action="Index">View Purchases</a></li>
+    <li><a asp-controller="Cars" asp-action="Index" class="btn btn-info">Manage  Cars</a></li>
+    <br />
+    <li><a asp-controller="Persons" asp-action="Index" class="btn btn-info">Manage  People</a></li>
+    <br />
+    <li><a asp-controller="Purchases" asp-action="Index" class="btn btn-info">Manage  Purchases</a></li>
+    <environment include="Development">
+        <br />
+        <br />
+        <br />
+
+        <a href="/swagger" target="_blank" class="btn btn-info">View API Docs (Swagger)</a>
+    </environment>
+
 </ul>
