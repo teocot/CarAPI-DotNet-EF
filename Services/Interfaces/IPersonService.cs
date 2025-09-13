@@ -7,5 +7,6 @@
         Task<PersonDto?> GetPersonWithCarsAsync(int id);
         Task<List<Person>> GetAllPeopleAsync();
 
+        Task<bool> DeletePersonAsync(int personId);
     }
 }

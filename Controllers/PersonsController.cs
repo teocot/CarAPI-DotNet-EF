@@ -7,16 +7,20 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using CarAPI.Data;
 using CarAPI.Models;
+using CarAPI.Services;
+using CarAPI.Services.Interfaces;
 
 namespace CarAPI.Controllers
 {
     public class PersonsController : Controller
     {
         private readonly AppDbContext _context;
+        private readonly IPersonService _personService;
 
-        public PersonsController(AppDbContext context)
+        public PersonsController(AppDbContext context, IPersonService personService)
         {
             _context = context;
+            _personService = personService;
         }
 
         // GET: Persons
@@ -147,15 +151,16 @@ namespace CarAPI.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var person = await _context.People.FindAsync(id);
-            if (person != null)
+            var success = await _personService.DeletePersonAsync(id);
+            if (!success)
             {
-                _context.People.Remove(person);
+                ModelState.AddModelError("", "Cannot delete person: they are linked to existing purchases.");
+                return RedirectToAction(nameof(Index)); // Or show a warning view
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+
 
         private bool PersonExists(int id)
         {

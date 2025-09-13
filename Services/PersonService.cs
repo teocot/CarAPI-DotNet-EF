@@ -39,6 +39,26 @@
         {
             return await _context.People.ToListAsync();
         }
+        public async Task<bool> DeletePersonAsync(int personId)
+        {
+            // Check if the person is referenced in any purchases
+            bool hasPurchases = await _context.Purchases.AnyAsync(p => p.PersonId == personId);
+            if (hasPurchases)
+            {
+                // Prevent deletion
+                return false;
+            }
+
+            var person = await _context.People.FindAsync(personId);
+            if (person == null)
+            {
+                return false;
+            }
+
+            _context.People.Remove(person);
+            await _context.SaveChangesAsync();
+            return true;
+        }
 
     }
 
