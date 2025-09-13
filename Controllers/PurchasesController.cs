@@ -50,8 +50,21 @@ namespace CarAPI.Controllers
         public IActionResult Create()
         {
             ViewData["PersonId"] = new SelectList(_context.People, "Id", "Name");
-            ViewData["CarId"] = new SelectList(
-    _context.Cars.Where(c => c.Purchase == null), "Id", "Make");
+
+            var availableCars = _context.Cars.Where(c => c.Purchase == null).ToList();
+
+            if (availableCars.Any())
+            {
+                ViewData["CarId"] = new SelectList(availableCars, "Id", "Make");
+            }
+            else
+            {
+                // Add a dummy item to indicate no cars are available
+                ViewData["CarId"] = new SelectList(new List<SelectListItem>
+                {
+                    new SelectListItem { Text = "Must create car", Value = "" }
+                }, "Value", "Text");
+            }
 
             return View();
         }
