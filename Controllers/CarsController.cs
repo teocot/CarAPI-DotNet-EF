@@ -1,44 +1,48 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using CarAPI.Data;
+using CarAPI.Models;
+using CarAPI.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using CarAPI.Data;
-using CarAPI.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace CarAPI.Controllers
 {
     public class CarsController : Controller
     {
         private readonly AppDbContext _context;
+        private readonly ICarService _carService;
+        private readonly IPersonService _personService;
 
-        public CarsController(AppDbContext context)
+        // constructor injection
+        public CarsController(AppDbContext context, ICarService carService, IPersonService personService)
         {
             _context = context;
+            _carService = carService;
+            _personService = personService;
         }
 
-        // GET: Cars
         public async Task<IActionResult> Index()
         {
-            var appDbContext = _context.Cars.Include(c => c.Person);
-            return View(await appDbContext.ToListAsync());
+            var cars = await _context.Cars.Include(c => c.Person).ToListAsync(); // returns List<Car>
+            return View(cars);
         }
+
 
         // GET: Cars/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null) return NotFound();
 
-            var car = await _context.Cars
-                .Include(c => c.Person)
-                .FirstOrDefaultAsync(m => m.Id == id);
-
+            var car = await _carService.GetCarByIdAsync(id.Value);
             if (car == null) return NotFound();
 
             return View(car);
         }
+
 
         // GET: Cars/Create
         public IActionResult Create()
@@ -50,25 +54,9 @@ namespace CarAPI.Controllers
         [HttpGet("api/persons/{id}")]
         public async Task<IActionResult> GetPerson(int id)
         {
-            var person = await _context.People
-                .Include(p => p.Cars)
-                .FirstOrDefaultAsync(p => p.Id == id);
-
-            if (person == null)
+            var dto = await _personService.GetPersonWithCarsAsync(id);
+            if (dto == null)
                 return NotFound();
-
-            var dto = new PersonDto
-            {
-                Id = person.Id,
-                Name = person.Name,
-                Email = person.Email,
-                Cars = person.Cars.Select(c => new CarDto
-                {
-                    Id = c.Id,
-                    Model = c.Model,
-                    Make = c.Make
-                }).ToList()
-            };
 
             return Ok(dto);
         }
@@ -77,51 +65,40 @@ namespace CarAPI.Controllers
         [Consumes("application/json")]
         public async Task<IActionResult> AddCarToPerson(int personId, [FromBody] Car car)
         {
-            // Validate person existence
-            var person = await _context.People.FindAsync(personId);
-            if (person == null)
+            try
             {
-                return NotFound(new { error = $"Person with ID {personId} not found." });
+                var createdCar = await _carService.AddCarToPersonAsync(personId, car);
+                if (createdCar == null)
+                    return NotFound(new { error = $"Person with ID {personId} not found." });
+
+                return CreatedAtAction(nameof(GetCarById), new { id = createdCar.Id }, createdCar);
             }
-
-            // Assign the foreign key
-            car.PersonId = personId;
-
-            // Optional: validate car fields
-            if (string.IsNullOrWhiteSpace(car.Model) || string.IsNullOrWhiteSpace(car.Make) || car.Year < 1886 || car.Price <= 0)
+            catch (ArgumentException ex)
             {
-                return BadRequest(new { error = "Invalid car data. Ensure all required fields are filled correctly." });
+                return BadRequest(new { error = ex.Message });
             }
-
-            // Save to database
-            _context.Cars.Add(car);
-            await _context.SaveChangesAsync();
-
-            // Return created car
-            return CreatedAtAction(nameof(GetCarById), new { id = car.Id }, car);
         }
 
         // get car by id
         [HttpGet("api/cars/{id}")]
         public async Task<IActionResult> GetCarById(int id)
         {
-            var car = await _context.Cars
-                .Include(c => c.Person)
-                .FirstOrDefaultAsync(c => c.Id == id);
-
-            if (car == null)
-                return NotFound();
-
+            var car = await _carService.GetCarByIdAsync(id);
+            if (car == null) return NotFound();
             return Ok(car);
         }
 
-        // POST: Cars/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(Car car)
+        public async Task<IActionResult> Create(Car car)
         {
-            _context.Cars.Add(car);
-            _context.SaveChanges();
+            if (!ModelState.IsValid)
+            {
+                ViewBag.PersonList = new SelectList(_context.People.ToList(), "Id", "Name", car.PersonId);
+                return View(car);
+            }
+
+            await _carService.CreateCarAsync(car);
             return RedirectToAction(nameof(Index));
         }
 
@@ -130,14 +107,15 @@ namespace CarAPI.Controllers
         {
             if (id == null) return NotFound();
 
-            var car = await _context.Cars.FindAsync(id);
+            var car = await _carService.GetCarByIdAsync(id.Value);
             if (car == null) return NotFound();
 
-            ViewBag.PersonList = new SelectList(_context.People.ToList(), "Id", "Name", car.PersonId);
+            var people = await _personService.GetAllPeopleAsync();
+            ViewBag.PersonList = new SelectList(people, "Id", "Name", car.PersonId);
+
             return View(car);
         }
 
-        // POST: Cars/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Model,Make,Year,Color,Price,PersonId")] Car car)
@@ -146,20 +124,14 @@ namespace CarAPI.Controllers
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(car);
-                    await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!CarExists(car.Id)) return NotFound();
-                    throw;
-                }
+                var success = await _carService.UpdateCarAsync(car);
+                if (!success) return NotFound();
+
+                return RedirectToAction(nameof(Index));
             }
 
-            ViewBag.PersonList = new SelectList(_context.People.ToList(), "Id", "Name", car.PersonId);
+            var people = await _personService.GetAllPeopleAsync(); // optional service refactor
+            ViewBag.PersonList = new SelectList(people, "Id", "Name", car.PersonId);
             return View(car);
         }
 
@@ -168,29 +140,24 @@ namespace CarAPI.Controllers
         {
             if (id == null) return NotFound();
 
-            var car = await _context.Cars
-                .Include(c => c.Person)
-                .FirstOrDefaultAsync(m => m.Id == id);
-
+            var car = await _carService.GetCarWithPersonByIdAsync(id.Value);
             if (car == null) return NotFound();
 
             return View(car);
         }
 
-        // POST: Cars/Delete/5
+
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var car = await _context.Cars.FindAsync(id);
-            if (car != null)
-            {
-                _context.Cars.Remove(car);
-                await _context.SaveChangesAsync();
-            }
+            var success = await _carService.DeleteCarAsync(id);
+            if (!success)
+                return NotFound();
 
             return RedirectToAction(nameof(Index));
         }
+
 
         private bool CarExists(int id)
         {

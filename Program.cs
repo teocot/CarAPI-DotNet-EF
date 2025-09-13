@@ -1,5 +1,7 @@
 using CarAPI.Data;
 using CarAPI.Models;
+using CarAPI.Services;
+using CarAPI.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,6 +21,10 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer(); // Required for Swagger
 builder.Services.AddSwaggerGen();           // Registers Swagger generator
+
+// add the service layer
+builder.Services.AddScoped<ICarService, CarService>();
+builder.Services.AddScoped<IPersonService, PersonService>();
 
 var app = builder.Build();
 
