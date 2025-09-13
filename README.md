@@ -29,12 +29,15 @@ dotnet restore
 - no need to run sql server of docker for a container
 
 ### Design
-- one to many relationsip
+- one to many relationsip person 0 has * puchases
+- one to one relationship purchase one car
+- Normally 1-1 is a same entity relation.
 - A person can have 0..* cars
-- with CRUD
+- CRUD is also implemented
 
 ### 1. See the api swagger
 http://localhost:5183/swagger/index.html
+work in progress, to use PUT and DELETE
 
 ### 2. Swagger view
 
