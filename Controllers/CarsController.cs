@@ -153,8 +153,12 @@ namespace CarAPI.Controllers
         {
             var success = await _carService.DeleteCarAsync(id);
             if (!success)
-                return NotFound();
+            {
+                TempData["ErrorMessage"] = "This car cannot be deleted because it is linked to existing purchases.";
+                return RedirectToAction(nameof(Index));
+            }
 
+            TempData["SuccessMessage"] = "Car deleted successfully.";
             return RedirectToAction(nameof(Index));
         }
 

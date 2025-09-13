@@ -145,13 +145,10 @@ namespace CarAPI.Services
         public async Task<Car?> GetCarEntityByIdAsync(int id)
         {
             return await _context.Cars
-                .Include(c => c.Person)
+                .Include(c => c.Purchase)
+                .ThenInclude(p => p.Buyer)
                 .FirstOrDefaultAsync(c => c.Id == id);
         }
 
-        Task<string?> ICarService.GetCarWithPersonByIdAsync(int value)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

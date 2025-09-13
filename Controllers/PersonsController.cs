@@ -154,13 +154,13 @@ namespace CarAPI.Controllers
             var success = await _personService.DeletePersonAsync(id);
             if (!success)
             {
-                ModelState.AddModelError("", "Cannot delete person: they are linked to existing purchases.");
-                return RedirectToAction(nameof(Index)); // Or show a warning view
+                TempData["ErrorMessage"] = "This person cannot be deleted because they are linked to existing purchases.";
+                return RedirectToAction(nameof(Index));
             }
 
+            TempData["SuccessMessage"] = "Person deleted successfully.";
             return RedirectToAction(nameof(Index));
         }
-
 
         private bool PersonExists(int id)
         {

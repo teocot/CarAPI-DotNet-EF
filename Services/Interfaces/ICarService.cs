@@ -14,7 +14,8 @@
         Task<bool> CarExistsAsync(int id);
         Task<Car?> GetCarEntityByIdAsync(int id);
         Task<Car> GetCarByIdAsync(int id);
-        Task<string?> GetCarWithPersonByIdAsync(int value);
+        //Task<string?> GetCarWithPersonByIdAsync(int value);
+        Task<Car?> GetCarWithPersonByIdAsync(int carId);
         Task<Car> AddCarToPersonAsync(int personId, Car car);
     }
 
