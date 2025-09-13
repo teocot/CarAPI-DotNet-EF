@@ -36,6 +36,7 @@
                         </li>
                     </ul>
                     <form method="post" asp-controller="Home" asp-action="SetTheme">
+                        <input type="hidden" name="returnUrl" value="@(Context.Request.Path + Context.Request.QueryString)" />
                         <button type="submit" name="theme" value="light" class="btn btn-outline-primary">Light</button>
                         <button type="submit" name="theme" value="dark" class="btn btn-outline-dark">Dark</button>
                         <button type="submit" name="theme" value="pastel" class="btn btn-outline-info">Pastel</button>

@@ -18,10 +18,18 @@ namespace CarAPI.Controllers
 
             }
             [HttpPost]
-            public IActionResult SetTheme(string theme)
+            public IActionResult SetTheme(string theme, string returnUrl)
             {
                 HttpContext.Session.SetString("Theme", theme);
-                return RedirectToAction("Index");
+
+                // Validate returnUrl to prevent open redirect attacks
+                if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+                {
+                    return Redirect(returnUrl);
+                }
+
+                // Fallback to home if returnUrl is invalid
+                return RedirectToAction("Index", "Home");
             }
 
         }
