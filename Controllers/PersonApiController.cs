@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 namespace CarAPI.ApiControllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     public class PersonsApiController : ControllerBase
     {
         private readonly AppDbContext _context;

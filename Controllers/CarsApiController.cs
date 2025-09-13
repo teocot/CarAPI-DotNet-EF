@@ -11,7 +11,7 @@ using CarAPI.Models;
 namespace CarAPI.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     public class CarsApiController : ControllerBase
     {
         private readonly AppDbContext _context;
