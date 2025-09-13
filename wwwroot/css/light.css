@@ -1,0 +1,30 @@
+﻿body {
+    background-color: #f9f9f9;
+    color: #333;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+a {
+    color: #007bff;
+}
+
+table {
+    background-color: #fff;
+    color: #333;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 10px;
+    border: 1px solid #ccc;
+}
+
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.alert-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+}

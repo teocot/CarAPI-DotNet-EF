@@ -17,6 +17,13 @@ namespace CarAPI.Controllers
                 return View();
 
             }
+            [HttpPost]
+            public IActionResult SetTheme(string theme)
+            {
+                HttpContext.Session.SetString("Theme", theme);
+                return RedirectToAction("Index");
+            }
+
         }
     }
 

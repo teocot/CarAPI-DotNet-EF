@@ -7,7 +7,18 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/CarAPI.styles.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/custom.css" />
+    @* <link rel="stylesheet" href="~/css/custom.css" /> *@
+    @{
+        // var theme = Context.Session.GetString("Theme") ?? "light";
+        // var themePath = Url.Content($"~/css/{theme}.css");
+        var theme = Context.Session.GetString("Theme");
+        var validThemes = new[] { "light", "dark", "pastel" };
+        var currentTheme = validThemes.Contains(theme) ? theme : "light";
+
+        var themePath = Url.Content($"~/css/{currentTheme}.css");
+    }
+    
+    <link rel="stylesheet" href="@themePath" />
 
 </head>
 <body>
@@ -25,6 +36,13 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                     </ul>
+                    <form id="themeForm" method="post" asp-controller="Home" asp-action="SetTheme">
+                        <select name="theme" onchange="document.getElementById('themeForm').submit();">
+                            <option value="light" selected="@(currentTheme == "light" ? "selected" : null)">Light</option>
+                            <option value="dark" selected="@(currentTheme == "dark" ? "selected" : null)">Dark</option>
+                            <option value="pastel" selected="@(currentTheme == "pastel" ? "selected" : null)">Pastel</option>
+                        </select>
+                    </form>
                 </div>
             </div>
         </nav>

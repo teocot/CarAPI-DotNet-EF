@@ -9,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Use In-Memory DB
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseInMemoryDatabase("DemoDb"));
+builder.Services.AddSession();
 
 // Add services
 builder.Services.AddControllersWithViews();
@@ -26,6 +27,7 @@ builder.Services.AddSwaggerGen();           // Registers Swagger generator
 builder.Services.AddScoped<ICarService, CarService>();
 builder.Services.AddScoped<IPersonService, PersonService>();
 builder.Services.AddScoped<IPurchaseService, PurchaseService>();
+
 
 var app = builder.Build();
 
@@ -71,6 +73,8 @@ if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
 }
+app.UseSession();
+
 app.UseStaticFiles();
 app.MapControllers();
 app.UseAuthorization();
