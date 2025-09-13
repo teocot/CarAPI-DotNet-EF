@@ -36,13 +36,34 @@ namespace CarAPI.Controllers
             return View(purchase);
         }
 
+
         public async Task<IActionResult> Create()
         {
             var people = await _purchaseService.GetPeopleAsync();
-            ViewData["PersonId"] = new SelectList(people, "Id", "Name");
+            if (people.Any())
+            {
+                ViewData["PersonId"] = new SelectList(people, "Id", "Name");
+            }
+            else
+            {
+                ViewData["PersonId"] = new SelectList(new List<SelectListItem>
+                {
+                    new SelectListItem { Text = "Create new person", Value = "" }
+                }, "Value", "Text");
+            }
 
             var availableCars = await _purchaseService.GetAvailableCarsAsync();
-            ViewData["CarId"] = new SelectList(availableCars, "Id", "Make");
+            if (availableCars.Any())
+            {
+                ViewData["CarId"] = new SelectList(availableCars, "Id", "Make");
+            }
+            else
+            {
+                ViewData["CarId"] = new SelectList(new List<SelectListItem>
+                {
+                    new SelectListItem { Text = "Create new car", Value = "" }
+                }, "Value", "Text");
+            }
 
             return View();
         }

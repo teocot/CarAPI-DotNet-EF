@@ -29,18 +29,33 @@ builder.Services.AddScoped<IPurchaseService, PurchaseService>();
 
 var app = builder.Build();
 
-// Configure and seed in-memory DB
+// create some data in the database
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-    var person = new Person { Name = "Alice", Email = "alice@example.com" };
-    var car = new Car { Model = "Civic", Make = "Honda", Year = 2020, Price = 22000, Color = "Blue", Person = person };
-    var purchase = new Purchase { Buyer = person, Car = car, PurchaseDate = DateTime.UtcNow };
+    // Create persons
+    var person1 = new Person { Name = "Alice", Email = "alice@example.com" };
+    var person2 = new Person { Name = "Bob", Email = "bob@example.com" };
 
-    context.People.Add(person);
-    context.Cars.Add(car);
+    // Create cars
+    var car1 = new Car { Model = "Civic", Make = "Honda", Year = 2020, Price = 22000, Color = "Blue", Person = person1 };
+    var car2 = new Car { Model = "Corolla", Make = "Toyota", Year = 2019, Price = 18000, Color = "White" };
+    var car3 = new Car { Model = "Model 3", Make = "Tesla", Year = 2021, Price = 35000, Color = "Red" };
+
+    // Create a purchase
+    var purchase = new Purchase
+    {
+        Buyer = person1,
+        Car = car1,
+        PurchaseDate = DateTime.UtcNow
+    };
+
+    // Add to context
+    context.People.AddRange(person1, person2);
+    context.Cars.AddRange(car1, car2, car3);
     context.Purchases.Add(purchase);
+
     context.SaveChanges();
 }
 
