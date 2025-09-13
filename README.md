@@ -1,7 +1,11 @@
 # CarAPI
 
-- This is a simple ASP.NET Core web application using Entity Framework Core with an **in-memory database**. No external setup required—just clone and run!
+- This is an ASP.NET Core web application using Entity Framework Core 
+- It uses an **in-memory database**. No external setup required—just clone and run!
+- It implements a 0 to many realtionship and a 1 to 1 relationship
 - It supports CRUD operations
+- The app can create Persons and Cars, then 
+- a Person can buy a car
 
 ## Getting Started
 
