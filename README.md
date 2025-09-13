@@ -10,17 +10,16 @@
 ## Getting Started
 
 ### 1. Clone the repository
-
 ```bash
 git clone https://github.com/teocot/CarAPI.git
-cd CarAPI
 ```
-### 2. Restore the packages for the project
-```bash
-dotnet restore
-```
-### 3. Run the app
-- open the solution in Visual studio and run the app
+- Open the app in Visual Studio
+- You can also clone it directly in Visual Studio: "File->Clone repository" and enter 
+- https://github.com/teocot/CarAPI.git
+
+### 2. Run the app
+- After cloning the app, you can start the app in Visual Studio
+- No additional setup is required
 
 
 ## Prerequisites
