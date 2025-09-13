@@ -63,6 +63,7 @@ namespace CarAPI.Controllers
             }
 
             var availableCars = _context.Cars.Where(c => c.Purchase == null).ToList();
+            ViewData["CarId"] = new SelectList(cars, "Id", "Make");
 
             if (availableCars.Any())
             {
