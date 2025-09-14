@@ -67,7 +67,7 @@ using (var scope = app.Services.CreateScope())
 //{
     app.UseSwagger();                         // Generates Swagger JSON
     app.UseSwaggerUI();                       // Serves Swagger UI
-/''}
+//}
 
 // Middleware pipeline
 //if (!app.Environment.IsDevelopment())
