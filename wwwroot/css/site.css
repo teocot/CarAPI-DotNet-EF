@@ -20,3 +20,18 @@ html {
 body {
   margin-bottom: 60px;
 }
+/* Blue background for brand and Home link */
+.navbar-brand,
+.navbar-nav .nav-link[href*="Home"] {
+    background-color: #cce5ff; /* pale blue */
+    color: #003366; /* deep blue text for contrast */
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+    /* Hover effect for interactivity */
+    .navbar-brand:hover,
+    .navbar-nav .nav-link[href*="Home"]:hover {
+        background-color: #b8daff;
+    }
