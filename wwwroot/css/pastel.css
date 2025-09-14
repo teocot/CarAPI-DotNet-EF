@@ -1,6 +1,7 @@
 ﻿body {
-    background-color: #fff0f5;
-    color: #4b4b4b;
+    background: linear-gradient(to right, #6ec6ff, #e3f2fd); /* vivid to pale blue */
+    color: #003366;
+    padding: 6px 12px;
     font-family: 'Segoe UI', sans-serif;
 }
 
@@ -28,3 +29,20 @@ th, td {
     background-color: #f7c6c7;
     color: #c62828;
 }
+.navbar-brand,
+.navbar-nav .nav-link[href*="Home"] {
+    background: linear-gradient(to right, #6ec6ff, #e3f2fd); /* vivid to pale blue */
+    color: #003366;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-weight: bold;
+    display: inline-block;
+    z-index: 1;
+    position: relative;
+}
+
+    /* Optional hover effect */
+    .navbar-brand:hover,
+    .navbar-nav .nav-link[href*="Home"]:hover {
+        background: linear-gradient(to right, #4bb3ff, #cce5ff);
+    }
