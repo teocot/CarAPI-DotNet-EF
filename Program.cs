@@ -63,17 +63,17 @@ using (var scope = app.Services.CreateScope())
 }
 
 // Enable Swagger only in development
-if (app.Environment.IsDevelopment())
-{
+//if (app.Environment.IsDevelopment())
+//{
     app.UseSwagger();                         // Generates Swagger JSON
     app.UseSwaggerUI();                       // Serves Swagger UI
-}
+/''}
 
 // Middleware pipeline
-if (!app.Environment.IsDevelopment())
-{
+//if (!app.Environment.IsDevelopment())
+//{
     app.UseExceptionHandler("/Home/Error");
-}
+//}
 app.UseSession();
 
 app.UseStaticFiles();
