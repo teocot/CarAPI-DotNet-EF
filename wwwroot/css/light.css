@@ -73,3 +73,6 @@ th, td {
     color: #ffffff;
     text-decoration-color: #ffffff;
 }
+.welcome-page a {
+    text-decoration: none;
+}
