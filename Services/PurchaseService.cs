@@ -2,7 +2,7 @@
 using CarAPI.Models;
 using CarAPI.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CarAPI.Services
 {

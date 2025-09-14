@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 // Use In-Memory DB
-builder.Services.AddDbContext<AppDbContext>(options =>
+builder.Services.AddDbContext<AppDbContext>(static options =>
     options.UseInMemoryDatabase("DemoDb"));
 builder.Services.AddSession();
 builder.Services.AddHttpContextAccessor(); // Required for Razor views
