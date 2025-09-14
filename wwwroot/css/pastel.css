@@ -24,3 +24,11 @@
     .navbar-nav .nav-link[href*="Home"]:hover {
         background: linear-gradient(to right, #ff4f7a, #ffb6c1); /* slightly deeper hover gradient */
     }
+.navbar-brand {
+    background: linear-gradient(to right, #b2f2bb, #ffe5b4); /* pastel green to orange */
+    color: #4b2e2e; /* dark text for contrast */
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: bold;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
