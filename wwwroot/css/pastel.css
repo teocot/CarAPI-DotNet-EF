@@ -1,38 +1,16 @@
 ﻿body {
-    background: linear-gradient(to right, #6ec6ff, #e3f2fd); /* vivid to pale blue */
-    color: #003366;
+    background: linear-gradient(to right, #b2f2bb, #ffe5b4); /* pastel green to orange */
+    color: #3b3b3b;
     padding: 6px 12px;
     font-family: 'Segoe UI', sans-serif;
 }
 
-a {
-    color: #ff69b4;
-}
 
-table {
-    background-color: #fffafc;
-    color: #4b4b4b;
-    border-collapse: collapse;
-}
-
-th, td {
-    padding: 10px;
-    border: 1px solid #e0cce0;
-}
-
-.alert-success {
-    background-color: #c1f0d6;
-    color: #2e7d32;
-}
-
-.alert-danger {
-    background-color: #f7c6c7;
-    color: #c62828;
-}
+/* Update navbar brand and Home link to match the red-pink theme */
 .navbar-brand,
 .navbar-nav .nav-link[href*="Home"] {
-    background: linear-gradient(to right, #6ec6ff, #e3f2fd); /* vivid to pale blue */
-    color: #003366;
+    background: linear-gradient(to right, #ff6f91, #ffc1cc); /* same gradient as body */
+    color: #4b2e2e;
     padding: 6px 12px;
     border-radius: 6px;
     font-weight: bold;
@@ -44,5 +22,5 @@ th, td {
     /* Optional hover effect */
     .navbar-brand:hover,
     .navbar-nav .nav-link[href*="Home"]:hover {
-        background: linear-gradient(to right, #4bb3ff, #cce5ff);
+        background: linear-gradient(to right, #ff4f7a, #ffb6c1); /* slightly deeper hover gradient */
     }
