@@ -1,87 +1,71 @@
-﻿/* Reset and base styles */
-body, html {
-    background: linear-gradient(to right, #2c3e50, #3498db);
-    color: #ffffff; /* 👈 This makes all body text white */
-    font-family: 'Segoe UI', sans-serif;
-    background-attachment: fixed;
-    background-size: cover;
-}
-
-/* Make all table text white */
-table, th, td {
+﻿/* 🌤️ Lighter Dark Blue Gradient Theme */
+body {
+    background: linear-gradient(to right, #243b55, #3a539b); /* softened navy to medium blue */
     color: #ffffff;
+    padding: 6px 12px;
+    font-family: 'Segoe UI', sans-serif;
+    box-sizing: border-box;
 }
 
-/* Optional: make links stand out */
+/* 🔗 Links */
 a {
     color: #00ffff;
     text-decoration: none;
 }
 
     a:hover {
-        text-decoration: underline;
         color: #1abc9c;
+        text-decoration: underline;
     }
 
-/* Optional: style table headers */
-thead th {
-    background-color: rgba(255, 255, 255, 0.1);
+/* 📊 Tables */
+table {
+    background-color: navy;
     color: #ffffff;
-}
-
-/* Optional: alternate row shading */
-tbody tr:nth-child(even) {
-    background-color: rgba(255, 255, 255, 0.05);
-}
-
-
-/* Ensure headings and links are also white */
-h1, h2, h3, h4, h5, h6,
-p, label, span, a {
-    color: #ffffff;
-}
-
-/* Optional: make form inputs readable */
-input, select, textarea {
-    background-color: #ffffff;
-    color: #2c3e50;
-}
-
-/* Headings */
-h1, h2, h3 {
-    color: #ffffff;
-    margin-bottom: 20px;
-}
-
-/* Buttons */
-.btn {
-    display: inline-block;
-    padding: 10px 20px;
-    background-color: #2980b9;
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    text-decoration: none;
-    transition: background-color 0.3s ease;
-}
-
-    .btn:hover {
-        background-color: #1abc9c;
-    }
-
-/* Form controls */
-input[type="text"],
-input[type="email"],
-input[type="password"],
-select,
-textarea {
+    border-collapse: collapse;
     width: 100%;
+}
+
+th, td {
     padding: 10px;
-    margin-bottom: 15px;
+    border: 1px solid #3f5873;
+}
+
+/* ✅ Alerts */
+.alert-success {
+    background-color: #2ecc71;
+    color: #ffffff;
+}
+
+.alert-danger {
+    background-color: #e74c3c;
+    color: #ffffff;
+}
+
+/* 🧭 Navbar Brand and Home Link */
+.navbar-brand,
+.navbar-nav .nav-link[href*="Home"] {
+    background: linear-gradient(to right, #3a539b, #4b70c2); /* lighter blue gradient */
+    color: #ffffff;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-weight: bold;
+    display: inline-block;
+    position: relative;
+}
+
+    .navbar-brand:hover,
+    .navbar-nav .nav-link[href*="Home"]:hover {
+        background: linear-gradient(to right, #4b70c2, #5c85d6); /* brighter hover gradient */
+    }
+
+/* 🧾 Form Inputs */
+input, select, textarea {
+    background-color: #34495e;
+    color: #ffffff;
     border: none;
     border-radius: 6px;
-    background-color: #ecf0f1;
-    color: #2c3e50;
+    padding: 10px;
     font-size: 16px;
 }
 
@@ -89,27 +73,24 @@ textarea {
     select:focus,
     textarea:focus {
         outline: none;
-        box-shadow: 0 0 5px #3498db;
+        box-shadow: 0 0 5px #3a539b;
     }
 
-/* Alerts */
-.alert {
-    padding: 15px;
+/* 🔘 Buttons */
+.btn {
+    background-color: #3a539b;
+    color: #ffffff;
+    padding: 10px 20px;
+    border: none;
     border-radius: 6px;
-    margin-bottom: 20px;
+    transition: background-color 0.3s ease;
 }
 
-.alert-success {
-    background-color: #2ecc71;
-    color: #fff;
-}
+    .btn:hover {
+        background-color: #1abc9c;
+    }
 
-.alert-danger {
-    background-color: #e74c3c;
-    color: #fff;
-}
-
-/* Footer */
+/* 🦶 Footer */
 footer {
     text-align: center;
     padding: 20px;
@@ -117,4 +98,9 @@ footer {
     font-size: 14px;
 }
 
-
+/* 🧾 Headings and Text Elements */
+h1, h2, h3, h4, h5, h6,
+p, label, span, a,
+th, td {
+    color: #ffffff;
+}
