@@ -10,12 +10,14 @@ body {
 /* 🔗 Links */
 a {
     color: #00ffff;
-    text-decoration: none;
+    text-decoration: underline;
+    text-decoration-color: #ffffff; /* 👈 white underline */
 }
 
     a:hover {
         color: #1abc9c;
         text-decoration: underline;
+        text-decoration-color: #ffffff; /* 👈 keep underline white on hover */
     }
 
 /* 📊 Tables */
