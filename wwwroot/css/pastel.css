@@ -32,3 +32,39 @@
     font-weight: bold;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
+.welcome-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px; /* space below the title */
+}
+
+.grid-box {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 20px;
+    padding: 30px;
+    background: linear-gradient(to right, #3a539b, #4b70c2); /* dark blue gradient */
+    border-radius: 12px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+    width: 400px;
+}
+
+.grid-item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center; /* ensures multi-line text is centered */
+    background-color: #2980b9;
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 8px;
+    padding: 20px;
+    transition: background-color 0.3s ease;
+}
+
+    .grid-item:hover {
+        background-color: #1abc9c;
+    }

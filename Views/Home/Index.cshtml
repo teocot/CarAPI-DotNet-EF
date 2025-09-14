@@ -2,21 +2,13 @@
     ViewData["Title"] = "Welcome";
 }
 
-<h1>🚗 Welcome to CarAPI 👤</h1>
-<p>This is your starting point. Choose where to go:</p>
-
-<ul>
-    <li><a asp-controller="Cars" asp-action="Index" class="btn btn-info">Manage  Cars</a></li>
-    <br />
-    <li><a asp-controller="Persons" asp-action="Index" class="btn btn-info">Manage  People</a></li>
-    <br />
-    <li><a asp-controller="Purchases" asp-action="Index" class="btn btn-info">Manage  Purchases</a></li>
-    <environment include="Development">
-        <br />
-        <br />
-        <br />
-
-        <a href="/swagger" target="_blank" class="btn btn-info">View API Docs (Swagger)</a>
-    </environment>
-
-</ul>
+<h1 class="text-center">🚗 Welcome to CarAPI 👤</h1>
+<p class="text-center">This is your starting point. Choose where to go:</p>
+<div class="welcome-container">
+    <div class="grid-box">
+        <a asp-controller="Cars" asp-action="Index" class="grid-item">Manage Cars</a>
+        <a asp-controller="Persons" asp-action="Index" class="grid-item">Manage People</a>
+        <a asp-controller="Purchases" asp-action="Index" class="grid-item">Manage Purchases</a>
+        <a href="/swagger" target="_blank" class="grid-item">View API Docs (Swagger)</a>
+    </div>
+</div>
