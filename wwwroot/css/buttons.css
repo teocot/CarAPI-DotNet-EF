@@ -1,7 +1,7 @@
 ﻿.theme-button {
-    background-color: #f0f0f0;
-    color: #333;
-    border: 2px solid #ccc;
+    background-color: #e6f4ea; /* soft green tint */
+    color: #2f4f2f; /* dark olive for contrast */
+    border: 2px solid #c3e6cb; /* muted green border */
     padding: 8px 16px;
     margin-right: 8px;
     border-radius: 6px;
@@ -11,12 +11,12 @@
 }
 
     .theme-button:hover {
-        background-color: #e0e0e0;
+        background-color: #d4edda; /* slightly deeper green on hover */
     }
 
 .active-theme {
-    background-color: #28a745 !important;
-    color: #fff !important;
-    border-color: #218838 !important;
+    background-color: #a8d5ba !important; /* gentle green highlight */
+    color: #1e3d1e !important; /* deeper green text */
+    border-color: #8fcf9c !important;
     font-weight: bold;
 }
