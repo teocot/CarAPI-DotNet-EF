@@ -1,0 +1,22 @@
+﻿.theme-button {
+    background-color: #f0f0f0;
+    color: #333;
+    border: 2px solid #ccc;
+    padding: 8px 16px;
+    margin-right: 8px;
+    border-radius: 6px;
+    font-weight: normal;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+    .theme-button:hover {
+        background-color: #e0e0e0;
+    }
+
+.active-theme {
+    background-color: #28a745 !important;
+    color: #fff !important;
+    border-color: #218838 !important;
+    font-weight: bold;
+}

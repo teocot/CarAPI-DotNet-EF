@@ -1,9 +1,7 @@
 ﻿@inject IHttpContextAccessor HttpContextAccessor
 @{
-    var theme = HttpContextAccessor.HttpContext?.Session.GetString("Theme");
-    var validThemes = new[] { "light", "dark", "pastel" };
-    var currentTheme = validThemes.Contains(theme) ? theme : "light";
-    var themePath = Url.Content($"~/css/{currentTheme}.css");
+    var theme = HttpContextAccessor.HttpContext?.Session.GetString("Theme") ?? "light";
+    var themePath = Url.Content($"~/css/{theme}.css");
 }
 
 
@@ -17,6 +15,7 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/CarAPI.styles.css" asp-append-version="true" />
     @* <link rel="stylesheet" href="~/css/custom.css" /> *@
+    <link rel="stylesheet" href="~/css/buttons.css" />
     <link rel="stylesheet" href="@themePath" />
 
 </head>
@@ -37,10 +36,24 @@
                     </ul>
                     <form method="post" asp-controller="Home" asp-action="SetTheme">
                         <input type="hidden" name="returnUrl" value="@(Context.Request.Path + Context.Request.QueryString)" />
-                        <button type="submit" name="theme" value="light" class="btn btn-outline-primary">Light</button>
-                        <button type="submit" name="theme" value="dark" class="btn btn-outline-dark">Dark</button>
-                        <button type="submit" name="theme" value="pastel" class="btn btn-outline-info">Pastel</button>
+
+                        <button type="submit" name="theme" value="light"
+                                class="theme-button @(theme == "light" ? "active-theme" : "")">
+                            Light
+                        </button>
+
+                        <button type="submit" name="theme" value="dark"
+                                class="theme-button @(theme == "dark" ? "active-theme" : "")">
+                            Dark
+                        </button>
+
+                        <button type="submit" name="theme" value="pastel"
+                                class="theme-button @(theme == "pastel" ? "active-theme" : "")">
+                            Pastel
+                        </button>
                     </form>
+
+
                 </div>
             </div>
         </nav>
