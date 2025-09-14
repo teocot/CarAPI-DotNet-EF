@@ -145,4 +145,6 @@ th, td {
 
     .grid-item:hover {
         background-color: #1abc9c;
+        color: #ffffff;
+        text-decoration-color: #ffffff;
     }
