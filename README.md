@@ -1,6 +1,6 @@
 # CarAPI
 
-## You can see teh app running at: https://carapi-avaefycvc9a6bgbw.australiasoutheast-01.azurewebsites.net/
+### You can see the app running at: https://carapi-avaefycvc9a6bgbw.australiasoutheast-01.azurewebsites.net/
 
 - This is an ASP.NET Core web application using Entity Framework Core 
 - It uses an **in-memory database**. No external setup required—just clone and run!
