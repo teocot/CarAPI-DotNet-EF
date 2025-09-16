@@ -1,7 +1,9 @@
 # CarAPI
 
+## You can see teh app running at: https://carapi-avaefycvc9a6bgbw.australiasoutheast-01.azurewebsites.net/
+
 - This is an ASP.NET Core web application using Entity Framework Core 
-- It uses an **in-memory database**. No external setup required—just clone and run!
+- It uses an **in-memory database**. No external setup requiredâ€”just clone and run!
 - It implements a 0 to many realtionship and a 1 to 1 relationship
 - It supports CRUD operations
 - The app can create Persons and Cars, then 
